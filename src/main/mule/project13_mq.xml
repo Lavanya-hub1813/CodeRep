@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="6ed2e63a-63ff-4af1-81ba-2c548fe4e505" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<jms:config name="JMS_Config" doc:name="JMS Config" doc:id="14faa9e7-c7c9-4bcc-a50f-bcfaa175ed5d" >
+		<jms:active-mq-connection>
+			<jms:factory-configuration />
+		</jms:active-mq-connection>
+	</jms:config>
+	<flow name="project13_mqFlow" doc:id="8b69fc16-9c7a-4a52-b03b-3de50fc42843" >
+		<http:listener doc:name="Listener" doc:id="7301ccc8-01e7-4b86-956f-480a7f76f0b2" config-ref="HTTP_Listener_config" path="/mq"/>
+		<set-payload value='#["Welcome to MQ"]' doc:name="Set Payload" doc:id="110747e8-1a7f-4b4b-995d-06a4b7999d83" />
+		<jms:publish doc:name="Publish" doc:id="3bcf50e5-1cdb-459d-8903-359e384535fe" config-ref="JMS_Config" destination="Mule10Q"/>
+	</flow>
+	<flow name="project13_mqFlow1" doc:id="e6cae4b3-658e-4515-b553-bf2f3b1b60d2" >
+		<http:listener doc:name="Listener" doc:id="1ea280e5-79dd-4269-b69a-89a842c04fd5" config-ref="HTTP_Listener_config" path="/con"/>
+		<jms:consume doc:name="Consume" doc:id="ec3db0a2-0383-46f0-ad7d-5608f5ba0d7b" config-ref="JMS_Config" destination="Mule10Q"/>
+		<logger level="INFO" doc:name="Logger" doc:id="486331f3-c976-4e92-bcef-2b84de2b2ed1" message="#[payload]"/>
+	</flow>
+</mule>
